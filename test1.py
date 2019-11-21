@@ -120,7 +120,7 @@ wiringpi.pwmWrite(SERVO_PWM_GPIO, int(CENTER))
 Kp = 5  # 1000
 Ki = 0  # 100
 Kd = 0  # 10000
-offset = cut.find_lines_and_center()[1]
+# offset = cut.find_lines_and_center()[1]
 integral = 0
 lastError = 0
 derivative = 0
