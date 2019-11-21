@@ -4,7 +4,8 @@ from picamera import PiCamera
 import time
 import cv2
 import numpy as np
-
+#import matplotlib.pyplot as plt
+from cut import find_lines_and_center
 
 #Initialize camera
 camera = PiCamera()
@@ -23,13 +24,14 @@ for frame in camera.capture_continuous(rawCapture, format="bgr", use_video_port=
 	cv2.imshow("Preview", img)
 	
 	rawCapture.truncate(0)
-	
+	od, st, ll, rl, _ =  find_lines_and_center(img, 120, 165)
+	print(f"odchylka: {od}, stred: {st}, levy pruh: {ll}, pravy_pruh: {rl}")
 	key = cv2.waitKey(1)
 	if key == ord("q"):
 		print("Quitting")
 		break
-	if tmp==0:
-		np.save("test_image.npy",img)
+	if tmp<10:
+		np.save(f"test_image{10+tmp}.npy",img)
 	#	print(end-start)
 		tmp+=1
 	

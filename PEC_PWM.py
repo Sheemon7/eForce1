@@ -99,11 +99,17 @@ def self_check():
     time.sleep(1)
     wiringpi.pwmWrite(MOTOR_PWM_GPIO, 0)
     """
+<<<<<<< HEAD
     for sp in range(0,800):
+=======
+    for sp in range(300,1500):
+>>>>>>> 07728286398e92f51a6f2e21d79294882be3a8fc
         wiringpi.digitalWrite(MOTOR_DIR_GPIO, 0)
         wiringpi.pwmWrite(MOTOR_PWM_GPIO, sp)
-        time.sleep(0.015)
+        time.sleep(0.006)
+    time.sleep(0.2)   
     wiringpi.pwmWrite(MOTOR_PWM_GPIO, 0)
+    time.sleep(0.5) 
     
     wiringpi.digitalWrite(MOTOR_DIR_GPIO, 1)
     wiringpi.pwmWrite(MOTOR_PWM_GPIO, SPEED)
