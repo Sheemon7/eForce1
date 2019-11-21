@@ -191,7 +191,7 @@ for frame in camera.capture_continuous(rawCapture, format="bgr", use_video_port=
     elif final_turn > MAX_ANGLE:
         final_turn = MAX_ANGLE
     #print("running")
-    wiringpi.pwmWrite(SERVO_PWM_GPIO, int(90))
+    wiringpi.pwmWrite(SERVO_PWM_GPIO, int(60))
     print(final_turn)
     # time.sleep(0.01)
     lastError = error
