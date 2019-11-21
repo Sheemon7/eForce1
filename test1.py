@@ -19,6 +19,14 @@ rawCapture = PiRGBArray(camera, size=(320, 240))
 
 # -----------------------------------------------------------
 
+def button_pressed():
+    global run
+    if not run:
+        run = True
+    else:
+        run = False
+
+
 
 def setup_gpios():
     # Setup GPIOs
@@ -119,14 +127,6 @@ derivative = 0
 measuring_time = False
 
 # -----------------------------------------------------------
-
-def button_pressed():
-    global run
-    if not run:
-        run = True
-    else:
-        run = False
-
 
 # setup_gpios()
 
