@@ -7,10 +7,10 @@ def find_lines_and_center(img, ind_1=130, ind_2=190):
 	img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
 	img = img[ind_1:ind_2, :]
 	suma = np.sum(img, axis=0)
-	left_line = max(0, np.argmin(suma[:160]))
-	right_line = 160+ min(160,np.argmin(suma[160:]))
+	left_line = max(0, np.argmin(suma[:120]))
+	right_line = 120+ min(120,np.argmin(suma[120:]))
 	stred = (right_line+left_line)/2
-	odchylka = stred-160
+	odchylka = stred-120
 	return odchylka, stred, left_line, right_line, img
 
 """
