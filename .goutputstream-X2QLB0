@@ -16,8 +16,8 @@ camera.color_effects = (128, 128)
 camera.framerate = 32
 rawCapture = PiRGBArray(camera, size=(320, 240))
 # Configuration of basic constant
-MIN_ANGLE = 60
-MAX_ANGLE = 120
+MIN_ANGLE = 80
+MAX_ANGLE = 140
 CENTER = MIN_ANGLE + (MAX_ANGLE - MIN_ANGLE) / 2
 SPEED = 300
 # Motor supply enable
@@ -86,10 +86,10 @@ wiringpi.digitalWrite(MOTOR_DISABLE_GPIO, 0)
 
 # Center wheels
 wiringpi.pwmWrite(SERVO_PWM_GPIO, int(CENTER))
-print(CENTER)
+
 # -----------------------------------------------------------
 
-Kp = 1  # 1000
+Kp = 5  # 1000
 Ki = 0  # 100
 Kd = 0  # 10000
 integral = 0
@@ -133,9 +133,8 @@ for frame in camera.capture_continuous(rawCapture, format="bgr", use_video_port=
 	    final_turn = MIN_ANGLE
 	elif final_turn > MAX_ANGLE:
 	    final_turn = MAX_ANGLE
-	#print("running")
-	wiringpi.pwmWrite(SERVO_PWM_GPIO, int(90))
-	print(final_turn)
+	print("running")
+	wiringpi.pwmWrite(SERVO_PWM_GPIO, final_turn)
 	# time.sleep(0.01)
 	lastError = error
 	key = cv2.waitKey(1)
