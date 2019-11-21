@@ -198,6 +198,6 @@ for frame in camera.capture_continuous(rawCapture, format="bgr", use_video_port=
     key = cv2.waitKey(1)
     if key == ord("q"):
         print("Quitting")
-            wiringpi.pwmWrite(MOTOR_PWM_GPIO, 0)
-            wiringpi.pwmWrite(SERVO_PWM_GPIO, int(CENTER))
-            break
+        wiringpi.pwmWrite(MOTOR_PWM_GPIO, 0)
+        wiringpi.pwmWrite(SERVO_PWM_GPIO, int(CENTER))
+        break
