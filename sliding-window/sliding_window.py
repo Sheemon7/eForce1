@@ -1,4 +1,6 @@
 from keras.models import load_model
+import numpy as np
+import matplotlib.pyplot as plt
 from pyimagesearch.helpers import pyramid
 from pyimagesearch.helpers import sliding_window
 import argparse
@@ -41,13 +43,20 @@ for resized in pyramid(image, scale=1.5):
 
                 # THIS IS WHERE YOU WOULD PROCESS YOUR WINDOW, SUCH AS APPLYING A
                 # MACHINE LEARNING CLASSIFIER TO CLASSIFY THE CONTENTS OF THE
-                # WINDOW
-                ans = model.predict(window)
-                print(ans)
-
-                # since we do not have a classifier, we'll just draw the window
-                clone = resized.copy()
-                cv2.rectangle(clone, (x, y), (x + winW, y + winH), (0, 255, 0), 2)
-                cv2.imshow("Window", clone)
-                cv2.waitKey(1)
-                time.sleep(0.025)
+                #img = img.reshape(img = np.asarray(img)
+                img = cv2.resize(window, (32, 32))
+                img = preprocessing(img)
+                plt.imshow(img, cmap = plt.get_cmap('gray'))
+                img = img.reshape(1, 32, 32, 1)
+                probs = model.predict(img)[0]
+                c = np.argmax(probs)
+                # if probs[c] > 0.5  and c < 2:
+                if c < 2:
+                    print(c, probs)
+                    # since we do not have a classifier, we'll just draw the window
+                    clone = resized.copy()
+                    cv2.rectangle(clone, (x, y), (x + winW, y + winH), (0, 255, 0), 2)
+                    # cv2.imshow("Window", clone)
+                    cv2.imwrite("{}_{}.png".format(c,probs), clone)
+                    # cv2.waitKey(1)
+                    # time.sleep(10)
