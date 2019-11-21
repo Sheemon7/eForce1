@@ -178,7 +178,7 @@ for frame in camera.capture_continuous(rawCapture, format="bgr", use_video_port=
         #         wiringpi.pwmWrite(MOTOR_PWM_GPIO, SPEED / 8)
 
     rawCapture.truncate(0)
-    error, st, ll, rl, _ =  cut.find_lines_and_center(img, 120, 165)
+    error, st, ll, rl, _ =  cut.find_lines_and_center(img, 120, 170)
     integral = integral + error
     derivative = error - lastError
     Turn = Kp * error + Ki * integral + Kd * derivative
