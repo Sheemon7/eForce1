@@ -69,6 +69,9 @@ SERVO_PWM_GPIO = 13
 SONIC_ECHO_GPIO = 24
 SONIC_TRIG_GPIO = 23
 
+LED_GPIO = 4
+SW_GPIO = 26
+
 def setup_gpios():
     # Setup GPIOs
     wiringpi.wiringPiSetupGpio()
@@ -99,9 +102,6 @@ setup_gpios()
 
 
 # -----------------------------------------------------------
-
-LED_GPIO = 4
-SW_GPIO = 26
 
 # Center wheels
 wiringpi.pwmWrite(SERVO_PWM_GPIO, CENTER)
