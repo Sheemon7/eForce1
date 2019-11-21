@@ -1,47 +1,47 @@
 #!/usr/bin/python3
-​
+
 import cv2
 import numpy as np
 import RPi.GPIO as GPIO
 import wiringpi
-​
+
 import time
 import sys
-​
+
 # Configuration of basic constant
 MIN_ANGLE = 80
 MAX_ANGLE = 140
-​
+
 SPEED = 300
-​
+
 ##### Configure GPIO pins #####
-​
+
 # Motor supply enable
 MOTOR_SPL_EN_GPIO = 10
-​
+
 # DC motor PWM GPIO
 MOTOR_PWM_GPIO = 12
-​
+
 # DC motor direction GPIO
 MOTOR_DIR_GPIO = 6
-​
+
 # DC motor disable GPIO
 MOTOR_DISABLE_GPIO = 19
-​
+
 # Servo motor PWM GPIO
 SERVO_PWM_GPIO = 13
-​
+
 # Sonic sensor echo/trigger GPIOs
 SONIC_ECHO_GPIO = 24
 SONIC_TRIG_GPIO = 23
-​
+
 # LED GPIO
 LED_GPIO = 4
-​
+
 # Switch GPIO
 SW_GPIO = 26
-​
-​
+
+
 def setup_gpios():
     # Setup GPIOs
     wiringpi.wiringPiSetupGpio()
@@ -67,9 +67,9 @@ def setup_gpios():
     GPIO.setmode(GPIO.BCM)
     GPIO.setup(SW_GPIO, GPIO.IN)
     GPIO.add_event_detect(SW_GPIO, GPIO.FALLING, button_pressed, 200)
-​
+
 ##### End of GPIO configuration #####
-​
+
 '''
     Test DC/servo motors
 '''
@@ -78,7 +78,7 @@ def self_check():
     wiringpi.pwmWrite(MOTOR_PWM_GPIO, 0)
     wiringpi.digitalWrite(MOTOR_SPL_EN_GPIO, 1)
     wiringpi.digitalWrite(MOTOR_DISABLE_GPIO, 0)
-​
+
     # Servo movement
     for angle in range(MIN_ANGLE, MAX_ANGLE, 1):
         wiringpi.pwmWrite(SERVO_PWM_GPIO, angle)
@@ -93,10 +93,19 @@ def self_check():
     
     # Check DC motor
     time.sleep(0.5)
+    """
     wiringpi.digitalWrite(MOTOR_DIR_GPIO, 0)
     wiringpi.pwmWrite(MOTOR_PWM_GPIO, SPEED)
     time.sleep(1)
     wiringpi.pwmWrite(MOTOR_PWM_GPIO, 0)
+    """
+    for sp in range(300,1500):
+        wiringpi.digitalWrite(MOTOR_DIR_GPIO, 0)
+        wiringpi.pwmWrite(MOTOR_PWM_GPIO, sp)
+        time.sleep(0.006)
+    time.sleep(0.2)   
+    wiringpi.pwmWrite(MOTOR_PWM_GPIO, 0)
+    time.sleep(0.5) 
     
     wiringpi.digitalWrite(MOTOR_DIR_GPIO, 1)
     wiringpi.pwmWrite(MOTOR_PWM_GPIO, SPEED)
@@ -104,55 +113,17 @@ def self_check():
     wiringpi.pwmWrite(MOTOR_PWM_GPIO, 0)
     
     wiringpi.digitalWrite(MOTOR_DIR_GPIO, 0)
-​
+
 '''
     Button pressed event handler
 '''
 def button_pressed(pin):
     print("Button pressed PIN: '{}'".format(pin))
-​
+
 if __name__ == "__main__":
     print("Configurion GPIOs")
     setup_gpios()
-​
+
     print("Self check")
     self_check()
     print("Self check done")
-​
-Collapse
-
-
-OpenCv camera example
-camera_example.py 
-#Import modules
-from picamera.array import PiRGBArray
-from picamera import PiCamera
-import time
-import cv2
-import numpy as np
-​
-​
-#Initialize camera
-camera = PiCamera()
-camera.resolution = (320, 240)
-camera.color_effects = (128, 128)
-camera.framerate = 32
-rawCapture = PiRGBArray(camera, size=(320, 240))
-​
-#Let camera warm up
-time.sleep(0.2)
-​
-for frame in camera.capture_continuous(rawCapture, format="bgr", use_video_port=True):
-	img = frame.array
-	cv2.imshow("Preview", img)
-	
-	rawCapture.truncate(0)
-	
-	key = cv2.waitKey(1)
-	if key == ord("q"):
-		print("Quitting")
-		break
-	
-	
-cv2.destroyAllWindows()
-camera.close()
