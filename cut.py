@@ -3,7 +3,7 @@ import numpy as np
 import cv2
 import time
 
-def find_lines_and_center(img, ind_1, ind_2):
+def find_lines_and_center(img, ind_1=130, ind_2=190):
 	img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
 	img = img[ind_1:ind_2, :]
 	suma = np.sum(img, axis=0)
