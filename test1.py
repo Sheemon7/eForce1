@@ -1,61 +1,14 @@
 #!/usr/bin/python3
-​
 import cv2
 import numpy as np
 import RPi.GPIO as GPIO
 import wiringpi
 import cut
-​
 import time
 import sys
 
-# Configuration of basic constant
-MIN_ANGLE = 80
-MAX_ANGLE = 140
-CENTER = MIN_ANGLE + (MAX_ANGLE - MIN_ANGLE) / 2
-​
-SPEED = 300
-
-# Motor supply enable
-MOTOR_SPL_EN_GPIO = 10
-​
-# DC motor PWM GPIO
-MOTOR_PWM_GPIO = 12
-​
-# DC motor direction GPIO
-MOTOR_DIR_GPIO = 6
-​
-# DC motor disable GPIO
-MOTOR_DISABLE_GPIO = 19
-​
-# Servo motor PWM GPIO
-SERVO_PWM_GPIO = 13
-
 # -----------------------------------------------------------
 
-# Setup motor
-wiringpi.pwmWrite(MOTOR_PWM_GPIO, 0)
-wiringpi.digitalWrite(MOTOR_SPL_EN_GPIO, 1)
-wiringpi.digitalWrite(MOTOR_DISABLE_GPIO, 0)
-
-# Center wheels
-wiringpi.pwmWrite(SERVO_PWM_GPIO, CENTER)
-
-# -----------------------------------------------------------
-
-Kp = 5  # 1000
-Ki = 0  # 100
-Kd = 0  # 10000
-offset = cut.find_lines_and_center()[1]
-integral = 0
-lastError = 0
-derivative = 0
-measuring_time = False
-run = False
-first_time = True
-
-
-# -----------------------------------------------------------
 
 def setup_gpios():
     # Setup GPIOs
@@ -83,11 +36,59 @@ def setup_gpios():
     GPIO.setup(SW_GPIO, GPIO.IN)
     GPIO.add_event_detect(SW_GPIO, GPIO.FALLING, button_pressed, 200)
 
+# -----------------------------------------------------------
+
+# Configuration of basic constant
+MIN_ANGLE = 80
+MAX_ANGLE = 140
+CENTER = MIN_ANGLE + (MAX_ANGLE - MIN_ANGLE) / 2
+​
+SPEED = 300
+
+# Motor supply enable
+MOTOR_SPL_EN_GPIO = 10
+​
+# DC motor PWM GPIO
+MOTOR_PWM_GPIO = 12
+​
+# DC motor direction GPIO
+MOTOR_DIR_GPIO = 6
+​
+# DC motor disable GPIO
+MOTOR_DISABLE_GPIO = 19
+​
+# Servo motor PWM GPIO
+SERVO_PWM_GPIO = 13
+
+setup_gpios()
+
+# -----------------------------------------------------------
+
+# Setup motor
+wiringpi.pwmWrite(MOTOR_PWM_GPIO, 0)
+wiringpi.digitalWrite(MOTOR_SPL_EN_GPIO, 1)
+wiringpi.digitalWrite(MOTOR_DISABLE_GPIO, 0)
+
+# Center wheels
+wiringpi.pwmWrite(SERVO_PWM_GPIO, CENTER)
+
+
+# -----------------------------------------------------------
+
+Kp = 5  # 1000
+Ki = 0  # 100
+Kd = 0  # 10000
+offset = cut.find_lines_and_center()[1]
+integral = 0
+lastError = 0
+derivative = 0
+measuring_time = False
+run = False
+first_time = True
 
 # -----------------------------------------------------------
 
 wiringpi.digitalWrite(MOTOR_DIR_GPIO, 0)  # forward
-setup_gpios()
 
 while first_time:
     while run:
