@@ -15,6 +15,40 @@ camera.resolution = (320, 240)
 camera.color_effects = (128, 128)
 camera.framerate = 32
 rawCapture = PiRGBArray(camera, size=(320, 240))
+
+
+# -----------------------------------------------------------
+
+
+def setup_gpios():
+    # Setup GPIOs
+    wiringpi.wiringPiSetupGpio()
+
+    wiringpi.pinMode(LED_GPIO, wiringpi.GPIO.OUTPUT)
+    wiringpi.digitalWrite(LED_GPIO, wiringpi.GPIO.OUTPUT)
+
+    wiringpi.pinMode(MOTOR_SPL_EN_GPIO, wiringpi.GPIO.OUTPUT)
+
+    wiringpi.pinMode(MOTOR_DIR_GPIO, wiringpi.GPIO.OUTPUT)
+    wiringpi.pinMode(MOTOR_DISABLE_GPIO, wiringpi.GPIO.OUTPUT)
+
+    wiringpi.pinMode(MOTOR_PWM_GPIO, wiringpi.GPIO.PWM_OUTPUT)
+    wiringpi.pinMode(SERVO_PWM_GPIO, wiringpi.GPIO.PWM_OUTPUT)
+
+    wiringpi.pwmSetMode(wiringpi.GPIO.PWM_MODE_MS)
+    wiringpi.pwmSetClock(2)
+    wiringpi.pwmSetRange(2000)
+
+    wiringpi.pinMode(SONIC_ECHO_GPIO, wiringpi.GPIO.INPUT)
+    wiringpi.pinMode(SONIC_TRIG_GPIO, wiringpi.GPIO.OUTPUT)
+
+    GPIO.setmode(GPIO.BCM)
+    GPIO.setup(SW_GPIO, GPIO.IN)
+    GPIO.add_event_detect(SW_GPIO, GPIO.FALLING, button_pressed, 200)
+
+# -----------------------------------------------------------
+
+
 # Configuration of basic constant
 MIN_ANGLE = 60
 MAX_ANGLE = 120
@@ -31,14 +65,31 @@ MOTOR_DISABLE_GPIO = 19
 # Servo motor PWM GPIO
 SERVO_PWM_GPIO = 13
 
+
 SONIC_ECHO_GPIO = 24
 SONIC_TRIG_GPIO = 23
+
+setup_gpios()
+
+# -----------------------------------------------------------
 
 LED_GPIO = 4
 SW_GPIO = 26
 
-run = False
+# Center wheels
+wiringpi.pwmWrite(SERVO_PWM_GPIO, CENTER)
 
+
+# -----------------------------------------------------------
+
+Kp = 5  # 1000
+Ki = 0  # 100
+Kd = 0  # 10000
+offset = cut.find_lines_and_center()[1]
+integral = 0
+lastError = 0
+derivative = 0
+measuring_time = False
 
 # -----------------------------------------------------------
 
@@ -83,6 +134,10 @@ setup_gpios()
 wiringpi.pwmWrite(MOTOR_PWM_GPIO, 0)
 wiringpi.digitalWrite(MOTOR_SPL_EN_GPIO, 1)
 wiringpi.digitalWrite(MOTOR_DISABLE_GPIO, 0)
+
+# -----------------------------------------------------------
+
+wiringpi.digitalWrite(MOTOR_DIR_GPIO, 0)  # forward
 
 # Center wheels
 wiringpi.pwmWrite(SERVO_PWM_GPIO, int(CENTER))
