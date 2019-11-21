@@ -112,7 +112,7 @@ setup_gpios()
 # -----------------------------------------------------------
 
 # Center wheels
-wiringpi.pwmWrite(SERVO_PWM_GPIO, CENTER)
+wiringpi.pwmWrite(SERVO_PWM_GPIO, int(CENTER))
 
 
 # -----------------------------------------------------------
