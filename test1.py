@@ -61,7 +61,7 @@ def setup_gpios():
 MIN_ANGLE = 70
 MAX_ANGLE = 130
 CENTER = MIN_ANGLE + (MAX_ANGLE - MIN_ANGLE) / 2
-SPEED = 500
+SPEED = 600
 # Motor supply enable
 MOTOR_SPL_EN_GPIO = 10
 # DC motor PWM GPIO
