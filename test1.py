@@ -58,8 +58,8 @@ def setup_gpios():
 
 
 # Configuration of basic constant
-MIN_ANGLE = 60
-MAX_ANGLE = 120
+MIN_ANGLE = 70
+MAX_ANGLE = 130
 CENTER = MIN_ANGLE + (MAX_ANGLE - MIN_ANGLE) / 2
 SPEED = 500
 # Motor supply enable
@@ -106,9 +106,7 @@ def setup_gpios():
     GPIO.setup(SW_GPIO, GPIO.IN)
     GPIO.add_event_detect(SW_GPIO, GPIO.FALLING, button_pressed, 200)
 
-setup_gpios()
-
-
+setup_gpios() 
 # -----------------------------------------------------------
 
 # Center wheels
