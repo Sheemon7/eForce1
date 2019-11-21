@@ -69,7 +69,34 @@ SERVO_PWM_GPIO = 13
 SONIC_ECHO_GPIO = 24
 SONIC_TRIG_GPIO = 23
 
+def setup_gpios():
+    # Setup GPIOs
+    wiringpi.wiringPiSetupGpio()
+
+    wiringpi.pinMode(LED_GPIO, wiringpi.GPIO.OUTPUT)
+    wiringpi.digitalWrite(LED_GPIO, wiringpi.GPIO.OUTPUT)
+
+    wiringpi.pinMode(MOTOR_SPL_EN_GPIO, wiringpi.GPIO.OUTPUT)
+
+    wiringpi.pinMode(MOTOR_DIR_GPIO, wiringpi.GPIO.OUTPUT)
+    wiringpi.pinMode(MOTOR_DISABLE_GPIO, wiringpi.GPIO.OUTPUT)
+
+    wiringpi.pinMode(MOTOR_PWM_GPIO, wiringpi.GPIO.PWM_OUTPUT)
+    wiringpi.pinMode(SERVO_PWM_GPIO, wiringpi.GPIO.PWM_OUTPUT)
+
+    wiringpi.pwmSetMode(wiringpi.GPIO.PWM_MODE_MS)
+    wiringpi.pwmSetClock(2)
+    wiringpi.pwmSetRange(2000)
+
+    wiringpi.pinMode(SONIC_ECHO_GPIO, wiringpi.GPIO.INPUT)
+    wiringpi.pinMode(SONIC_TRIG_GPIO, wiringpi.GPIO.OUTPUT)
+
+    GPIO.setmode(GPIO.BCM)
+    GPIO.setup(SW_GPIO, GPIO.IN)
+    GPIO.add_event_detect(SW_GPIO, GPIO.FALLING, button_pressed, 200)
+
 setup_gpios()
+
 
 # -----------------------------------------------------------
 
@@ -100,33 +127,8 @@ def button_pressed():
     else:
         run = False
 
-def setup_gpios():
-    # Setup GPIOs
-    wiringpi.wiringPiSetupGpio()
 
-    wiringpi.pinMode(LED_GPIO, wiringpi.GPIO.OUTPUT)
-    wiringpi.digitalWrite(LED_GPIO, wiringpi.GPIO.OUTPUT)
-
-    wiringpi.pinMode(MOTOR_SPL_EN_GPIO, wiringpi.GPIO.OUTPUT)
-
-    wiringpi.pinMode(MOTOR_DIR_GPIO, wiringpi.GPIO.OUTPUT)
-    wiringpi.pinMode(MOTOR_DISABLE_GPIO, wiringpi.GPIO.OUTPUT)
-
-    wiringpi.pinMode(MOTOR_PWM_GPIO, wiringpi.GPIO.PWM_OUTPUT)
-    wiringpi.pinMode(SERVO_PWM_GPIO, wiringpi.GPIO.PWM_OUTPUT)
-
-    wiringpi.pwmSetMode(wiringpi.GPIO.PWM_MODE_MS)
-    wiringpi.pwmSetClock(2)
-    wiringpi.pwmSetRange(2000)
-
-    wiringpi.pinMode(SONIC_ECHO_GPIO, wiringpi.GPIO.INPUT)
-    wiringpi.pinMode(SONIC_TRIG_GPIO, wiringpi.GPIO.OUTPUT)
-
-    GPIO.setmode(GPIO.BCM)
-    GPIO.setup(SW_GPIO, GPIO.IN)
-    GPIO.add_event_detect(SW_GPIO, GPIO.FALLING, button_pressed, 200)
-
-setup_gpios()
+# setup_gpios()
 
 # -----------------------------------------------------------
 
@@ -161,41 +163,41 @@ wiringpi.pwmWrite(MOTOR_PWM_GPIO, int(SPEED))
 time.sleep(0.2)
 
 for frame in camera.capture_continuous(rawCapture, format="bgr", use_video_port=True):
-	img = frame.array
-	# if LightValue < 5:
-	#     if not measuring_time:
-	#         start_time = time.time()
-	#         measuring_time = True
-	#     elapsed_time = time.time() - start_time
-	#
-	# else:
-	#     measuring_time = False
-	#
-	# if elapsed_time >= 3:  # if lost line, find it
-	#     while LightValue <= 5:
-	#         final_turn = CENTER + 15
-	#         wiringpi.pwmWrite(SERVO_PWM_GPIO, final_turn)
-	#         wiringpi.pwmWrite(MOTOR_PWM_GPIO, SPEED / 8)
+    img = frame.array
+        # if LightValue < 5:
+        #     if not measuring_time:
+        #         start_time = time.time()
+        #         measuring_time = True
+        #     elapsed_time = time.time() - start_time
+        #
+        # else:
+        #     measuring_time = False
+        #
+        # if elapsed_time >= 3:  # if lost line, find it
+        #     while LightValue <= 5:
+        #         final_turn = CENTER + 15
+        #         wiringpi.pwmWrite(SERVO_PWM_GPIO, final_turn)
+        #         wiringpi.pwmWrite(MOTOR_PWM_GPIO, SPEED / 8)
 
-	rawCapture.truncate(0)
-	error, st, ll, rl, _ =  cut.find_lines_and_center(img, 120, 165)
-	integral = integral + error
-	derivative = error - lastError
-	Turn = Kp * error + Ki * integral + Kd * derivative
-	# Turn /= 100  # ????
-	final_turn = CENTER + Turn
-	if final_turn < MIN_ANGLE:
-	    final_turn = MIN_ANGLE
-	elif final_turn > MAX_ANGLE:
-	    final_turn = MAX_ANGLE
-	#print("running")
-	wiringpi.pwmWrite(SERVO_PWM_GPIO, int(90))
-	print(final_turn)
-	# time.sleep(0.01)
-	lastError = error
-	key = cv2.waitKey(1)
-	if key == ord("q"):
-		print("Quitting")
-		wiringpi.pwmWrite(MOTOR_PWM_GPIO, 0)
-		wiringpi.pwmWrite(SERVO_PWM_GPIO, int(CENTER))
-		break
+    rawCapture.truncate(0)
+    error, st, ll, rl, _ =  cut.find_lines_and_center(img, 120, 165)
+    integral = integral + error
+    derivative = error - lastError
+    Turn = Kp * error + Ki * integral + Kd * derivative
+    # Turn /= 100  # ????
+    final_turn = CENTER + Turn
+    if final_turn < MIN_ANGLE:
+        final_turn = MIN_ANGLE
+    elif final_turn > MAX_ANGLE:
+        final_turn = MAX_ANGLE
+    #print("running")
+    wiringpi.pwmWrite(SERVO_PWM_GPIO, int(90))
+    print(final_turn)
+    # time.sleep(0.01)
+    lastError = error
+    key = cv2.waitKey(1)
+    if key == ord("q"):
+        print("Quitting")
+            wiringpi.pwmWrite(MOTOR_PWM_GPIO, 0)
+            wiringpi.pwmWrite(SERVO_PWM_GPIO, int(CENTER))
+            break
