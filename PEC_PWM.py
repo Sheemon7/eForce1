@@ -93,9 +93,16 @@ def self_check():
     
     # Check DC motor
     time.sleep(0.5)
+    """
     wiringpi.digitalWrite(MOTOR_DIR_GPIO, 0)
     wiringpi.pwmWrite(MOTOR_PWM_GPIO, SPEED)
     time.sleep(1)
+    wiringpi.pwmWrite(MOTOR_PWM_GPIO, 0)
+    """
+    for sp in range(0,600)
+        wiringpi.digitalWrite(MOTOR_DIR_GPIO, 0)
+        wiringpi.pwmWrite(MOTOR_PWM_GPIO, sp)
+        time.sleep(0.015)
     wiringpi.pwmWrite(MOTOR_PWM_GPIO, 0)
     
     wiringpi.digitalWrite(MOTOR_DIR_GPIO, 1)
